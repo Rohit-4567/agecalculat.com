@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}Compare Ages{% endblock %}
+
+{% block content %}
+<!-- Meta tag for responsive design -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<h1>🔁 Compare Two Birthdays</h1>
+<form method="POST">
+    <div>
+        <h3>First Birthday:</h3>
+        <input type="number" id="day1" name="day1" placeholder="Day" min="1" max="31" required>
+        <input type="number" id="month1" name="month1" placeholder="Month" min="1" max="12" required>
+        <input type="number" id="year1" name="year1" placeholder="Year" min="1900" max="{{ current_year }}" required>
+    </div>
+    <br>
+    <div>
+        <h3>Second Birthday:</h3>
+        <input type="number" id="day2" name="day2" placeholder="Day" min="1" max="31" required>
+        <input type="number" id="month2" name="month2" placeholder="Month" min="1" max="12" required>
+        <input type="number" id="year2" name="year2" placeholder="Year" min="1900" max="{{ current_year }}" required>
+    </div>
+    <br>
+    <button type="submit">Compare</button>
+</form>
+
+{% if compare_result %}
+<div class="result">
+    <h3>{{ compare_result }}</h3>
+</div>
+{% endif %}
+
+{% endblock %}
+
+<!-- Responsive CSS -->
+<style>
+    /* Basic styling for desktop/tablet */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 80%;
+        margin: auto;
+        max-width: 900px;
+        padding: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    input[type="number"], button {
+        padding: 10px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 2.5rem;
+    }
+
+    .result {
+        margin-top: 20px;
+        background-color: #e9f7e9;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    /* For mobile screens */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.8rem; /* Smaller heading on mobile */
+        }
+
+        .container {
+            width: 95%;
+        }
+
+        input[type="number"], button {
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        .result h3 {
+            font-size: 1.2rem;
+        }
+
+        .result p {
+            font-size: 1rem;
+        }
+    }
+</style>
+<script>
+    
+    document.getElementById('compare-form').onsubmit = function(event) {
+        // Get the form input values for both dates
+        var day1 = document.getElementById('day1').value;
+        var month1 = document.getElementById('month1').value;
+        var year1 = document.getElementById('year1').value;
+        
+        var day2 = document.getElementById('day2').value;
+        var month2 = document.getElementById('month2').value;
+        var year2 = document.getElementById('year2').value;
+
+        // Check if all fields are filled
+        if (day1 === '' || month1 === '' || year1 === '' || day2 === '' || month2 === '' || year2 === '') {
+            alert("Please fill in both dates!");
+            event.preventDefault();
+            return false;
+        }
+
+        // Check if the dates are in the future
+        var currentDate = new Date();
+        var dob1 = new Date(year1, month1 - 1, day1); // months are 0-indexed in JS
+        var dob2 = new Date(year2, month2 - 1, day2); // months are 0-indexed in JS
+
+        if (dob1 > currentDate || dob2 > currentDate) {
+            alert("Birth dates can't be in the future!");
+            event.preventDefault();
+            return false;
+        }
+
+        return true; // Proceed with form submission
+    };
+</script>
+

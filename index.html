@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Age Calculator{% endblock %}
+
+{% block content %}
+<!-- Meta tag for responsive design -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<h1>🎂 Age Calculator</h1>
+
+<form method="POST">
+    <label for="dob">Date of Birth</label><br>
+    <input type="number" id="day" name="day" placeholder="Day" min="1" max="31" required>
+    <input type="number" id="month" name="month" placeholder="Month" min="1" max="12" required>
+    <input type="number" id="year" name="year" placeholder="Year" min="1900" max="{{ current_year }}" required>
+    <button type="submit">Calculate</button>
+</form>
+
+{% if age %}
+<div class="result">
+    {% if age.error %}
+        <p class="error">{{ age.error }}</p>
+    {% else %}
+        <h3>Your Age:</h3>
+        <p>{{ age.years }} Years, {{ age.months }} Months, {{ age.days }} Days</p>
+        <h4>🎁 Days Until Next Birthday: {{ age.days_until_birthday }}</h4>
+        <p>{{ age.birthday_message }}</p>
+        <h4>Total Time Lived:</h4>
+        <p>{{ age.total_time_lived.days }} days, {{ age.total_time_lived.hours }} hours</p>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
+
+<!-- Responsive CSS -->
+<style>
+    /* Basic styling for desktop/tablet */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 80%;
+        margin: auto;
+        max-width: 900px;
+        padding: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    input[type="number"], button {
+        padding: 10px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 2.5rem;
+    }
+
+    .result {
+        margin-top: 20px;
+        background-color: #e9f7e9;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .error {
+        color: red;
+        font-size: 1.2rem;
+        margin-top: 10px;
+    }
+
+    /* For mobile screens */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.8rem; /* Smaller heading on mobile */
+        }
+
+        .container {
+            width: 95%;
+        }
+
+        input[type="number"], button {
+            padding: 12px;
+            font-size: 1rem;
+        }
+
+        .result h3, .result h4 {
+            font-size: 1.2rem;
+        }
+
+        .result p {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    
+    document.getElementById('age-form').onsubmit = function(event) {
+        // Get the form input values
+        var day = document.getElementById('day').value;
+        var month = document.getElementById('month').value;
+        var year = document.getElementById('year').value;
+
+        // Check if the values are empty or invalid
+        if (day === '' || month === '' || year === '') {
+            alert("Please fill all the fields!");
+            event.preventDefault();
+            return false;
+        }
+
+        // Check for valid date range
+        var currentDate = new Date();
+        var dob = new Date(year, month - 1, day); // months are 0-indexed in JS
+
+        // If the birth date is in the future, show an error
+        if (dob > currentDate) {
+            alert("Your birth date can't be in the future!");
+            event.preventDefault();
+            return false;
+        }
+
+        // Optional: You can do more validations here (e.g. valid month, day range)
+        return true; // Proceed with form submission
+    };
+</script>
+
